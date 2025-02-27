@@ -1,0 +1,34 @@
+{
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell",
+            "args": ["-NoLogo"]
+        },
+        "Command Prompt": {
+            "path": [
+                "${env:windir}\\Sysnative\\cmd.exe",
+                "${env:windir}\\System32\\cmd.exe"
+            ],
+            "args": [],
+            "icon": "terminal-cmd"
+        }
+    },
+    "files.encoding": "utf8",
+    "files.autoGuessEncoding": true,
+    "files.eol": "\r\n",
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": true,
+    "editor.renderWhitespace": "boundary",
+    "editor.wordWrap": "off",
+    "editor.rulers": [120],
+    "workbench.colorTheme": "Default Dark+",
+    "workbench.iconTheme": "vs-seti",
+    "explorer.confirmDelete": true,
+    "explorer.confirmDragAndDrop": true,
+    "git.enableSmartCommit": true,
+    "git.confirmSync": true,
+    "git.autofetch": true
+}
