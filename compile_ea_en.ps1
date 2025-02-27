@@ -2,15 +2,45 @@
 # PowerShell script to compile FX automated trading EA
 
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-$metaEditorPath = "C:\Program Files (x86)\MetaTrader 4\metaeditor.exe"
+
+# Common paths for MetaEditor
+$metaEditorPaths = @(
+    "C:\Program Files\MetaTrader 4\metaeditor.exe",
+    "C:\Program Files (x86)\MetaTrader 4\metaeditor.exe",
+    "C:\Program Files\MetaTrader 4 Terminal\metaeditor.exe",
+    "C:\Program Files (x86)\MetaTrader 4 Terminal\metaeditor.exe"
+)
+
+# Auto-detect MetaEditor path
+$metaEditorPath = $null
+foreach ($path in $metaEditorPaths) {
+    if (Test-Path $path) {
+        $metaEditorPath = $path
+        Write-Host "MetaEditor found: $metaEditorPath" -ForegroundColor Green
+        break
+    }
+}
 
 # Check MetaEditor path
-if (-not (Test-Path $metaEditorPath)) {
-    Write-Host "MetaEditor not found: $metaEditorPath" -ForegroundColor Red
-    Write-Host "Please check the MetaEditor path." -ForegroundColor Red
-    Write-Host "Edit this script to set the correct path." -ForegroundColor Red
-    $null = Read-Host "Press any key to exit"
-    exit 1
+if (-not $metaEditorPath) {
+    Write-Host "MetaEditor not found. Checked the following paths:" -ForegroundColor Red
+    foreach ($path in $metaEditorPaths) {
+        Write-Host "- $path" -ForegroundColor Red
+    }
+
+    # Ask user for the correct path
+    Write-Host "Please enter the exact path to MetaEditor:" -ForegroundColor Yellow
+    $userPath = Read-Host
+
+    if (Test-Path $userPath) {
+        $metaEditorPath = $userPath
+        Write-Host "MetaEditor found: $metaEditorPath" -ForegroundColor Green
+    } else {
+        Write-Host "MetaEditor not found at the specified path: $userPath" -ForegroundColor Red
+        Write-Host "Edit this script to set the correct path." -ForegroundColor Red
+        $null = Read-Host "Press any key to exit"
+        exit 1
+    }
 }
 
 # Check EA files in project directory

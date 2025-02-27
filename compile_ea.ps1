@@ -2,15 +2,45 @@
 # FX自動売買EAをコンパイルするPowerShellスクリプト
 
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-$metaEditorPath = "C:\Program Files\MetaTrader 4\metaeditor.exe"
+
+# MetaEditorの一般的なパスのリスト
+$metaEditorPaths = @(
+    "C:\Program Files\MetaTrader 4\metaeditor.exe",
+    "C:\Program Files (x86)\MetaTrader 4\metaeditor.exe",
+    "C:\Program Files\MetaTrader 4 Terminal\metaeditor.exe",
+    "C:\Program Files (x86)\MetaTrader 4 Terminal\metaeditor.exe"
+)
+
+# MetaEditorのパスを自動検出
+$metaEditorPath = $null
+foreach ($path in $metaEditorPaths) {
+    if (Test-Path $path) {
+        $metaEditorPath = $path
+        Write-Host "MetaEditorが見つかりました: $metaEditorPath" -ForegroundColor Green
+        break
+    }
+}
 
 # MetaEditorのパスを確認
-if (-not (Test-Path $metaEditorPath)) {
-    Write-Host "MetaEditorが見つかりません: $metaEditorPath" -ForegroundColor Red
-    Write-Host "MetaEditorのパスを確認してください。" -ForegroundColor Red
-    Write-Host "このスクリプトを編集して、正しいパスを設定してください。" -ForegroundColor Red
-    Read-Host "何かキーを押して終了してください..."
-    exit 1
+if (-not $metaEditorPath) {
+    Write-Host "MetaEditorが見つかりません。以下のパスを確認しました:" -ForegroundColor Red
+    foreach ($path in $metaEditorPaths) {
+        Write-Host "- $path" -ForegroundColor Red
+    }
+
+    # ユーザーに正しいパスの入力を求める
+    Write-Host "MetaEditorの正確なパスを入力してください:" -ForegroundColor Yellow
+    $userPath = Read-Host
+
+    if (Test-Path $userPath) {
+        $metaEditorPath = $userPath
+        Write-Host "MetaEditorが見つかりました: $metaEditorPath" -ForegroundColor Green
+    } else {
+        Write-Host "指定されたパスにMetaEditorが見つかりません: $userPath" -ForegroundColor Red
+        Write-Host "このスクリプトを編集して、正しいパスを設定してください。" -ForegroundColor Red
+        Read-Host "何かキーを押して終了してください..."
+        exit 1
+    }
 }
 
 # プロジェクトディレクトリのEAファイルを確認
