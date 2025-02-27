@@ -1,0 +1,21 @@
+# MT4コンパイル済みファイル
+*.ex4
+
+# MT4バックアップファイル
+*.mq4.bak
+
+# FX_EA_Projectフォルダ（セットアップスクリプトで生成される）
+/FX_EA_Project/
+
+# Windows固有のファイル
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Visual Studio Code設定
+.vscode/
+
+# その他の一時ファイル
+*.log
+*.tmp
