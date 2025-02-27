@@ -32,6 +32,9 @@
     "git.confirmSync": true,
     "git.autofetch": true,
     "cSpell.words": [
-        "metaeditor"
+        "EURUSD",
+        "MACD",
+        "metaeditor",
+        "XAUUSD"
     ]
 }

@@ -4,9 +4,6 @@
 # MT4バックアップファイル
 *.mq4.bak
 
-# FX_EA_Projectフォルダ（セットアップスクリプトで生成される）
-/FX_EA_Project/
-
 # Windows固有のファイル
 Thumbs.db
 ehthumbs.db
