@@ -27,12 +27,13 @@ SampleEA/
 │   ├── project_rules.md   # プロジェクト開発ルール
 │   ├── pr_description.md  # PR説明テンプレート
 │   └── 使い方.md          # 日本語使用方法ガイド
+├── src/                   # EAソースコードディレクトリ
+│   ├── MartingaleEA.mq4   # マーチンゲールEAのソースコード
+│   ├── RSI_BB_EA.mq4      # RSI+ボリンジャーバンドEAのソースコード
+│   └── SimpleMAcrossEA.mq4 # 単純移動平均線クロスEAのソースコード
 ├── compile_ea.ps1         # コンパイルスクリプトショートカット
 ├── install_to_mt4.ps1     # インストールスクリプトショートカット
-├── setup_project.ps1      # セットアップスクリプトショートカット
-├── MartingaleEA.mq4       # マーチンゲールEAのソースコード
-├── RSI_BB_EA.mq4          # RSI+ボリンジャーバンドEAのソースコード
-└── SimpleMAcrossEA.mq4    # 単純移動平均線クロスEAのソースコード
+└── setup_project.ps1      # セットアップスクリプトショートカット
 ```
 
 ## パラメーター設定

@@ -2,6 +2,7 @@
 # FX自動売買EAをMT4にインストールするPowerShellスクリプト
 
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
+$rootPath = Split-Path -Parent $scriptPath
 
 # MT4のデータディレクトリを取得
 $appDataPath = [Environment]::GetFolderPath("ApplicationData")
@@ -57,22 +58,39 @@ $eaFiles = @(
     "MartingaleEA.ex4"
 )
 
+# コンパイル済みEAファイルの検索場所
+$searchPaths = @(
+    (Join-Path $rootPath "FX_EA_Project\MQL4\Experts"),
+    (Join-Path $rootPath "src")
+)
+
 $success = $true
 foreach ($eaFile in $eaFiles) {
-    $sourcePath = Join-Path $scriptPath "FX_EA_Project\MQL4\Experts\$eaFile"
-    $destPath = Join-Path $mt4ExpertsDir $eaFile
+    $found = $false
 
-    if (Test-Path $sourcePath) {
-        Write-Host "コピー中: $eaFile" -ForegroundColor Yellow
-        Copy-Item -Path $sourcePath -Destination $destPath -Force
-        if (Test-Path $destPath) {
-            Write-Host "コピー成功: $eaFile" -ForegroundColor Green
-        } else {
-            Write-Host "コピーに失敗しました: $eaFile" -ForegroundColor Red
-            $success = $false
+    # 各検索パスでEAファイルを探す
+    foreach ($searchPath in $searchPaths) {
+        $sourcePath = Join-Path $searchPath $eaFile
+        if (Test-Path $sourcePath) {
+            $found = $true
+            $destPath = Join-Path $mt4ExpertsDir $eaFile
+
+            Write-Host "コピー中: $eaFile (from $searchPath)" -ForegroundColor Yellow
+            Copy-Item -Path $sourcePath -Destination $destPath -Force
+
+            if (Test-Path $destPath) {
+                Write-Host "コピー成功: $eaFile" -ForegroundColor Green
+            } else {
+                Write-Host "コピーに失敗しました: $eaFile" -ForegroundColor Red
+                $success = $false
+            }
+
+            break
         }
-    } else {
-        Write-Host "ファイルが見つかりません: $sourcePath" -ForegroundColor Red
+    }
+
+    if (-not $found) {
+        Write-Host "ファイルが見つかりません: $eaFile" -ForegroundColor Red
         Write-Host "先にEAをコンパイルしてください（compile_ea.ps1を実行）。" -ForegroundColor Yellow
         $success = $false
     }

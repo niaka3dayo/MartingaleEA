@@ -2,6 +2,7 @@
 # FX自動売買EAをコンパイルするPowerShellスクリプト
 
 $scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
+$rootPath = Split-Path -Parent $scriptPath
 
 # MetaEditorの一般的なパスのリスト
 $metaEditorPaths = @(
@@ -43,27 +44,38 @@ if (-not $metaEditorPath) {
     }
 }
 
-# プロジェクトディレクトリのEAファイルを確認
-$eaFiles = @(
+# srcディレクトリのEAファイルを確認
+$srcPath = Join-Path $rootPath "src"
+$eaFiles = Get-ChildItem -Path $srcPath -Filter "*.mq4" | Select-Object -ExpandProperty FullName
+
+# プロジェクトディレクトリのEAファイルも確認
+$projectEAFiles = @(
     "FX_EA_Project\MQL4\Experts\SimpleMAcrossEA.mq4",
     "FX_EA_Project\MQL4\Experts\RSI_BB_EA.mq4",
     "FX_EA_Project\MQL4\Experts\MartingaleEA.mq4"
 )
+
+foreach ($eaFile in $projectEAFiles) {
+    $fullPath = Join-Path $rootPath $eaFile
+    if (Test-Path $fullPath) {
+        $eaFiles += $fullPath
+    }
+}
 
 # EAファイルをコンパイル
 Write-Host "FX自動売買EAをコンパイルします..." -ForegroundColor Cyan
 
 $success = $true
 foreach ($eaFile in $eaFiles) {
-    $fullPath = Join-Path $scriptPath $eaFile
-    if (Test-Path $fullPath) {
-        Write-Host "コンパイル中: $eaFile" -ForegroundColor Yellow
-        & $metaEditorPath /compile:"$fullPath" /log
+    if (Test-Path $eaFile) {
+        $fileName = Split-Path -Leaf $eaFile
+        Write-Host "コンパイル中: $fileName" -ForegroundColor Yellow
+        & $metaEditorPath /compile:"$eaFile" /log
         if ($LASTEXITCODE -ne 0) {
-            Write-Host "コンパイルに失敗しました: $eaFile" -ForegroundColor Red
+            Write-Host "コンパイルに失敗しました: $fileName" -ForegroundColor Red
             $success = $false
         } else {
-            Write-Host "コンパイル成功: $eaFile" -ForegroundColor Green
+            Write-Host "コンパイル成功: $fileName" -ForegroundColor Green
         }
     } else {
         Write-Host "ファイルが見つかりません: $eaFile" -ForegroundColor Red
