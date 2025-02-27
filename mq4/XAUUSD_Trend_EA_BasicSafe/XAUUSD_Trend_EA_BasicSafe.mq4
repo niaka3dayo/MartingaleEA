@@ -163,7 +163,7 @@ void OnTick()
     }
 
     // 3) 時間フィルター
-    if(!IsTradeAllowed())
+    if(!IsTimeFrameAllowed())
         return;
 
     // 4) スプレッドチェック
@@ -312,7 +312,7 @@ void OpenBuyOrder()
     if(UseDynamicSlippage)
     {
         double atrVal = iATR(Symbol(), 0, ATRPeriodForVolatility, 0);
-        currentSlippage = MathRound(atrVal * SlippageATRMultiplier / g_point);
+        currentSlippage = (int)MathRound(atrVal * SlippageATRMultiplier / g_point);
     }
 
     int ticket = -1;
@@ -363,7 +363,7 @@ void OpenSellOrder()
     if(UseDynamicSlippage)
     {
         double atrVal = iATR(Symbol(), 0, ATRPeriodForVolatility, 0);
-        currentSlippage = MathRound(atrVal * SlippageATRMultiplier / g_point);
+        currentSlippage = (int)MathRound(atrVal * SlippageATRMultiplier / g_point);
     }
 
     int ticket = -1;
@@ -417,7 +417,7 @@ double CalculateLotSize()
         if(tickValue != 0 && StopLoss != 0 && lotStep > 0)
         {
             lotSize = (accountEquity * RiskPercent / 100.0) / (StopLoss * tickValue);
-            lotSize = NormalizeDouble(lotSize / lotStep, 0) * lotStep;
+            lotSize = NormalizeDouble(MathFloor(lotSize / lotStep), 0) * lotStep;
 
             double minLot = MarketInfo(Symbol(), MODE_MINLOT);
             if(lotSize < minLot)     lotSize = minLot;
@@ -526,7 +526,7 @@ int CountOrders()
 //+------------------------------------------------------------------+
 //| 時間フィルター                                                   |
 //+------------------------------------------------------------------+
-bool IsTradeAllowed()
+bool IsTimeFrameAllowed()
 {
     if(!UseTimeFilter)
         return true;
@@ -631,8 +631,8 @@ void RefreshRiskStats()
     if(OrderSelect(totalHist-1, SELECT_BY_POS, MODE_HISTORY))
         lastProfit = OrderProfit()+OrderSwap()+OrderCommission();
 
-    if(lastProfit < 0)  g_consecLoss++;
-    else if(lastProfit > 0) g_consecLoss=0;
+    if(lastProfit < 0.0)  g_consecLoss++;
+    else if(lastProfit > 0.0) g_consecLoss = 0;
 }
 
 //+------------------------------------------------------------------+

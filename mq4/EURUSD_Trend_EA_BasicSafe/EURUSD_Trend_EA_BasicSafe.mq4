@@ -168,7 +168,7 @@ void OnTick()
     }
 
     // 3) 時間フィルター
-    if(!IsTradeAllowed())
+    if(!IsTimeToTrade())
         return;
 
     // 4) スプレッドチェック
@@ -317,7 +317,7 @@ void OpenBuyOrder()
     if(UseDynamicSlippage)
     {
         double atrVal = iATR(Symbol(), 0, ATRPeriodForVolatility, 0);
-        currentSlippage = MathRound(atrVal * SlippageATRMultiplier / g_point);
+        currentSlippage = (int)MathRound(atrVal * SlippageATRMultiplier / g_point);
     }
 
     int ticket = -1;
@@ -368,7 +368,7 @@ void OpenSellOrder()
     if(UseDynamicSlippage)
     {
         double atrVal = iATR(Symbol(), 0, ATRPeriodForVolatility, 0);
-        currentSlippage = MathRound(atrVal * SlippageATRMultiplier / g_point);
+        currentSlippage = (int)MathRound(atrVal * SlippageATRMultiplier / g_point);
     }
 
     int ticket = -1;
@@ -531,7 +531,7 @@ int CountOrders()
 //+------------------------------------------------------------------+
 //| 時間フィルター                                                   |
 //+------------------------------------------------------------------+
-bool IsTradeAllowed()
+bool IsTimeToTrade()
 {
     if(!UseTimeFilter)
         return true;
