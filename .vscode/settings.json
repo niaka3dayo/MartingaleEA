@@ -30,5 +30,8 @@
     "explorer.confirmDragAndDrop": true,
     "git.enableSmartCommit": true,
     "git.confirmSync": true,
-    "git.autofetch": true
+    "git.autofetch": true,
+    "cSpell.words": [
+        "metaeditor"
+    ]
 }
